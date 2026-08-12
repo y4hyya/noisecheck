@@ -3,6 +3,8 @@
 from importlib.metadata import PackageNotFoundError, version
 
 from noisecheck.errors import DataError, LoadError, NoisecheckError, PairingError
+from noisecheck.io.csv_ import read_csv
+from noisecheck.io.jsonl import read_jsonl
 from noisecheck.schema import Dataset, PairedData, Record, pair
 
 try:
@@ -19,4 +21,6 @@ __all__ = [
     "PairingError",
     "Record",
     "pair",
+    "read_csv",
+    "read_jsonl",
 ]
