@@ -10,6 +10,7 @@ from noisecheck.stats.multiplicity import benjamini_hochberg
 from noisecheck.stats.paired import ComparisonResult, compare_paired
 from noisecheck.stats.power import items_needed, mde
 from noisecheck.stats.unpaired import UnpairedResult, compare_unpaired
+from noisecheck.stats.variance import NoiseFloor, noise_floor
 from noisecheck.verdict import Assessment, Gate, MetricVerdict, Outcome, judge
 
 try:
@@ -25,6 +26,7 @@ __all__ = [
     "Gate",
     "LoadError",
     "MetricVerdict",
+    "NoiseFloor",
     "NoisecheckError",
     "Outcome",
     "PairedData",
@@ -37,6 +39,7 @@ __all__ = [
     "items_needed",
     "judge",
     "mde",
+    "noise_floor",
     "pair",
     "read_csv",
     "read_jsonl",
