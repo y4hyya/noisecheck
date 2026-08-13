@@ -6,8 +6,11 @@ from noisecheck.errors import DataError, LoadError, NoisecheckError, PairingErro
 from noisecheck.io.csv_ import read_csv
 from noisecheck.io.jsonl import read_jsonl
 from noisecheck.schema import Dataset, PairedData, Record, pair
+from noisecheck.stats.multiplicity import benjamini_hochberg
 from noisecheck.stats.paired import ComparisonResult, compare_paired
+from noisecheck.stats.power import items_needed, mde
 from noisecheck.stats.unpaired import UnpairedResult, compare_unpaired
+from noisecheck.verdict import Assessment, Gate, MetricVerdict, Outcome, judge
 
 try:
     __version__ = version("noisecheck")
@@ -15,17 +18,25 @@ except PackageNotFoundError:
     __version__ = "0.0.0"
 
 __all__ = [
+    "Assessment",
     "ComparisonResult",
     "DataError",
     "Dataset",
+    "Gate",
     "LoadError",
+    "MetricVerdict",
     "NoisecheckError",
+    "Outcome",
     "PairedData",
     "PairingError",
     "Record",
     "UnpairedResult",
+    "benjamini_hochberg",
     "compare_paired",
     "compare_unpaired",
+    "items_needed",
+    "judge",
+    "mde",
     "pair",
     "read_csv",
     "read_jsonl",
