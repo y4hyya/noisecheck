@@ -54,6 +54,11 @@ class TestComparePaired:
         assert result.p_value == 1.0
         assert any("identical" in w for w in result.warnings)
 
+    def test_deltas_below_float_precision_are_degenerate(self) -> None:
+        result = compare_paired(paired([0.0, 0.0], [0.0, 3.0237544075441316e-230]))
+        assert (result.ci_low, result.ci_high) == (result.estimate, result.estimate)
+        assert any("zero variance" in w for w in result.warnings)
+
     def test_constant_shift_reports_degenerate_interval(self) -> None:
         baseline = [0.0, 0.5, 1.0, 0.25]
         candidate = [b + 0.25 for b in baseline]

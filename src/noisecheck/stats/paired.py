@@ -49,8 +49,9 @@ def compare_paired(
     estimate = float(deltas.mean())
     warnings: list[str] = []
 
-    constant = bool(np.all(deltas == deltas[0]))
-    if constant:
+    sample_se = float(deltas.std(ddof=1) / np.sqrt(n))
+    degenerate = bool(np.all(deltas == deltas[0])) or sample_se == 0.0
+    if degenerate:
         se = 0.0
         ci_low = estimate
         ci_high = estimate
@@ -59,7 +60,7 @@ def compare_paired(
         else:
             warnings.append("paired deltas have zero variance, the interval is degenerate")
     else:
-        se = float(deltas.std(ddof=1) / np.sqrt(n))
+        se = sample_se
         ci_low, ci_high = bootstrap_ci(deltas, b=b, seed=seed, level=level)
 
     p_value = sign_flip_p(deltas, b=b, seed=seed)

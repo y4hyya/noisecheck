@@ -17,11 +17,11 @@ def bootstrap_ci(
     level: float = 0.95,
 ) -> tuple[float, float]:
     values = _as_deltas(deltas)
-    if bool(np.all(values == values[0])):
-        raise ValueError("deltas have zero variance, the interval would be meaningless")
     n = values.size
     estimate = float(values.mean())
     se = float(values.std(ddof=1) / np.sqrt(n))
+    if bool(np.all(values == values[0])) or se == 0.0:
+        raise ValueError("deltas have zero variance, the interval would be meaningless")
     rng = np.random.default_rng(seed)
     studentized: list[NDArray[np.float64]] = []
     for rows in _blocks(b, n):
@@ -29,7 +29,8 @@ def bootstrap_ci(
         samples = values[indices]
         means = samples.mean(axis=1)
         errors = samples.std(axis=1, ddof=1) / np.sqrt(n)
-        errors = np.where(errors == 0.0, se, errors)
+        spread = samples.max(axis=1) - samples.min(axis=1)
+        errors = np.where((spread == 0.0) | (errors == 0.0), se, errors)
         studentized.append((means - estimate) / errors)
     t_all = np.concatenate(studentized)
     alpha = 1.0 - level

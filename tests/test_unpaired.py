@@ -41,6 +41,10 @@ class TestCompareUnpaired:
         with pytest.raises(DataError, match="zero variance"):
             compare_unpaired([0.5, 0.5, 0.5], [0.7, 0.7])
 
+    def test_variance_below_float_precision_counts_as_constant(self) -> None:
+        with pytest.raises(DataError, match="zero variance"):
+            compare_unpaired([0.0, 3.0237544075441316e-230], [0.7, 0.7])
+
     def test_one_constant_side_is_fine_but_noted(self) -> None:
         result = compare_unpaired([0.5, 0.5, 0.5], [0.4, 0.7, 0.9, 0.6])
         assert 0.0 < result.p_value <= 1.0

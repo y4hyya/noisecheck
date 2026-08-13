@@ -39,7 +39,7 @@ def compare_unpaired(
     """
     base = _as_sample(baseline, "baseline")
     cand = _as_sample(candidate, "candidate")
-    if bool(np.all(base == base[0])) and bool(np.all(cand == cand[0])):
+    if _effectively_constant(base) and _effectively_constant(cand):
         raise DataError("both variants have zero variance, the welch test needs spread")
 
     with warnings.catch_warnings(record=True) as caught:
@@ -62,6 +62,10 @@ def compare_unpaired(
         level=level,
         warnings=tuple(notes),
     )
+
+
+def _effectively_constant(sample: NDArray[np.float64]) -> bool:
+    return bool(np.all(sample == sample[0])) or float(sample.std(ddof=1)) == 0.0
 
 
 def _as_sample(values: ArrayLike, name: str) -> NDArray[np.float64]:
