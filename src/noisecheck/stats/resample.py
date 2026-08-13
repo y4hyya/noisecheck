@@ -29,9 +29,8 @@ def bootstrap_ci(
         samples = values[indices]
         means = samples.mean(axis=1)
         errors = samples.std(axis=1, ddof=1) / np.sqrt(n)
-        with np.errstate(divide="ignore", invalid="ignore"):
-            t = (means - estimate) / errors
-        studentized.append(np.where(np.isnan(t), 0.0, t))
+        errors = np.where(errors == 0.0, se, errors)
+        studentized.append((means - estimate) / errors)
     t_all = np.concatenate(studentized)
     alpha = 1.0 - level
     quantiles = np.quantile(t_all, [alpha / 2.0, 1.0 - alpha / 2.0])

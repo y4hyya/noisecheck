@@ -49,3 +49,4 @@ typeCheckingMode = "strict"
 testpaths = ["tests"]
 addopts = "--cov=noisecheck --cov-branch --cov-report=term-missing --cov-fail-under=90"
 markers = ["slow: long running statistical checks"]
+filterwarnings = ["error"]
