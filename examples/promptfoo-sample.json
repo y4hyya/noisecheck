@@ -1,0 +1,81 @@
+{
+  "evalId": "eval-2026-08-10T12:00:00",
+  "results": {
+    "version": 2,
+    "timestamp": "2026-08-10T12:00:00.000Z",
+    "results": [
+      {
+        "provider": { "id": "openai:gpt-4.1-mini", "label": "baseline" },
+        "testIdx": 0,
+        "success": true,
+        "score": 0.82,
+        "namedScores": { "grounding": 0.9 },
+        "latencyMs": 1240,
+        "vars": { "question": "What is the refund policy?" }
+      },
+      {
+        "provider": { "id": "openai:gpt-4.1-mini", "label": "baseline" },
+        "testIdx": 1,
+        "success": false,
+        "score": 0.35,
+        "namedScores": { "grounding": 0.4 },
+        "latencyMs": 980,
+        "vars": { "question": "Cancel my subscription" }
+      },
+      {
+        "provider": { "id": "openai:gpt-4.1-mini", "label": "baseline" },
+        "testIdx": 2,
+        "success": true,
+        "score": 0.71,
+        "namedScores": { "grounding": 0.8 },
+        "latencyMs": 1510,
+        "vars": { "question": "Change the billing address" }
+      },
+      {
+        "provider": { "id": "openai:gpt-4.1-mini", "label": "baseline" },
+        "testIdx": 3,
+        "success": true,
+        "score": 0.64,
+        "namedScores": { "grounding": 0.7 },
+        "latencyMs": 1105,
+        "vars": { "question": "Explain the pro plan" }
+      },
+      {
+        "provider": { "id": "openai:gpt-5.2", "label": "candidate" },
+        "testIdx": 0,
+        "success": true,
+        "score": 0.91,
+        "namedScores": { "grounding": 0.95 },
+        "latencyMs": 1620,
+        "vars": { "question": "What is the refund policy?" }
+      },
+      {
+        "provider": { "id": "openai:gpt-5.2", "label": "candidate" },
+        "testIdx": 1,
+        "success": true,
+        "score": 0.58,
+        "namedScores": { "grounding": 0.6 },
+        "latencyMs": 1340,
+        "vars": { "question": "Cancel my subscription" }
+      },
+      {
+        "provider": { "id": "openai:gpt-5.2", "label": "candidate" },
+        "testIdx": 2,
+        "success": true,
+        "score": 0.77,
+        "namedScores": { "grounding": 0.85 },
+        "latencyMs": 1790,
+        "vars": { "question": "Change the billing address" }
+      },
+      {
+        "provider": { "id": "openai:gpt-5.2", "label": "candidate" },
+        "testIdx": 3,
+        "success": false,
+        "score": 0.41,
+        "namedScores": { "grounding": 0.5 },
+        "latencyMs": 1215,
+        "vars": { "question": "Explain the pro plan" }
+      }
+    ]
+  }
+}
