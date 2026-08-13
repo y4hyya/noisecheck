@@ -5,7 +5,7 @@ import math
 from pathlib import Path
 from typing import Any
 
-from noisecheck import PairedData, compare_paired, compare_unpaired
+from noisecheck import PairedData, benjamini_hochberg, compare_paired, compare_unpaired
 from noisecheck.stats.resample import bootstrap_ci, sign_flip_p
 
 FIXTURE = json.loads((Path(__file__).parent / "golden" / "stats.json").read_text())
@@ -41,6 +41,12 @@ class TestAgainstReferences:
             result = compare_paired(binary_paired(case), b=50)
             assert result.mcnemar_p is not None
             assert math.isclose(result.mcnemar_p, case["expected_p"], rel_tol=1e-12)
+
+    def test_benjamini_hochberg_matches_statsmodels(self) -> None:
+        for case in FIXTURE["benjamini_hochberg"]:
+            adjusted = benjamini_hochberg(case["p_values"])
+            for got, want in zip(adjusted, case["expected_q"], strict=True):
+                assert math.isclose(got, want, rel_tol=1e-12)
 
     def test_welch_matches_statsmodels(self) -> None:
         spec = FIXTURE["welch"]

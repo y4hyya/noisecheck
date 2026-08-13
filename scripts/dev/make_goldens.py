@@ -7,6 +7,7 @@ from pathlib import Path
 
 import numpy as np
 from statsmodels.stats.contingency_tables import mcnemar
+from statsmodels.stats.multitest import multipletests
 from statsmodels.stats.weightstats import CompareMeans, DescrStatsW
 
 from noisecheck.stats.resample import bootstrap_ci, sign_flip_p
@@ -44,9 +45,20 @@ def main() -> None:
     _, welch_p, _ = means.ttest_ind(usevar="unequal")
     welch_low, welch_high = means.tconfint_diff(alpha=0.05, usevar="unequal")
 
+    bh_cases = []
+    for p_values in [
+        [0.01, 0.04, 0.03, 0.2],
+        [0.5],
+        [0.001, 0.001, 0.9],
+        [0.04, 0.9, 0.05, 0.049],
+    ]:
+        _, adjusted, _, _ = multipletests(p_values, method="fdr_bh")
+        bh_cases.append({"p_values": p_values, "expected_q": [float(q) for q in adjusted]})
+
     delta_array = np.asarray(deltas)
     lock_low, lock_high = bootstrap_ci(delta_array, b=2000, seed=42)
     payload = {
+        "benjamini_hochberg": bh_cases,
         "mcnemar": mcnemar_cases,
         "welch": {
             "baseline": welch_baseline,
