@@ -24,6 +24,7 @@ dev = [
     "pyright>=1.1.380",
     "statsmodels>=0.14",
     "scikit-learn>=1.5",
+    "scipy-stubs>=1.17.1.5",
 ]
 
 [build-system]
