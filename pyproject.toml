@@ -15,6 +15,9 @@ dependencies = [
     "typer>=0.12",
 ]
 
+[project.scripts]
+noisecheck = "noisecheck.cli:app"
+
 [dependency-groups]
 dev = [
     "pytest>=8.2",
