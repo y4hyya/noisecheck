@@ -1,11 +1,13 @@
-"""Cluster diagnostics for eval comparisons."""
+"""Cluster diagnostics and power arithmetic for eval comparisons."""
 
 from __future__ import annotations
 
+import math
 from collections.abc import Sequence
 
 import numpy as np
 from numpy.typing import ArrayLike, NDArray
+from scipy.stats import norm
 
 
 def group_codes(clusters: Sequence[str]) -> NDArray[np.int64]:
@@ -68,3 +70,24 @@ def design_effect(icc_value: float, average_cluster_size: float) -> float:
 def effective_sample_size(n: int, deff: float) -> float:
     """How many independent rows the clustered data is really worth."""
     return n / deff
+
+
+def mde(se: float, alpha: float = 0.05, power: float = 0.8) -> float:
+    """Smallest true difference this eval would detect with the given power."""
+    if se <= 0.0:
+        raise ValueError(f"standard error must be positive, got {se}")
+    return float((norm.ppf(1.0 - alpha / 2.0) + norm.ppf(power)) * se)
+
+
+def items_needed(
+    se: float,
+    n: int,
+    target: float,
+    alpha: float = 0.05,
+    power: float = 0.8,
+) -> int:
+    """Total paired items required before the eval can detect the target difference."""
+    if target <= 0.0:
+        raise ValueError(f"target difference must be positive, got {target}")
+    current = mde(se, alpha=alpha, power=power)
+    return math.ceil(n * (current / target) ** 2)
