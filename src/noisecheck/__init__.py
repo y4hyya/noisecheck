@@ -7,6 +7,7 @@ from noisecheck.io.csv_ import read_csv
 from noisecheck.io.jsonl import read_jsonl
 from noisecheck.schema import Dataset, PairedData, Record, pair
 from noisecheck.stats.paired import ComparisonResult, compare_paired
+from noisecheck.stats.unpaired import UnpairedResult, compare_unpaired
 
 try:
     __version__ = version("noisecheck")
@@ -22,7 +23,9 @@ __all__ = [
     "PairedData",
     "PairingError",
     "Record",
+    "UnpairedResult",
     "compare_paired",
+    "compare_unpaired",
     "pair",
     "read_csv",
     "read_jsonl",
