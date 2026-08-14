@@ -53,7 +53,7 @@ task_success: this eval cannot detect differences below 0.1653, about 36 items w
 
 Same data. The latency improvement survives, because it shows up inside every conversation. The task success "win" honestly becomes "cannot tell": 8 conversations are not enough independent evidence, and the tool says how many items would settle it.
 
-This is not a matter of taste. [validation.md](docs/validation.md) simulates a thousand worlds per row where the truth is known: the naive analysis fires up to 32 percent false alarms on clustered data, while noisecheck stays at the promised 5.
+This is not a matter of taste. [validation.md](https://github.com/y4hyya/noisecheck/blob/main/docs/validation.md) simulates a thousand worlds per row where the truth is known: the naive analysis fires up to 32 percent false alarms on clustered data, while noisecheck stays at the promised 5.
 
 ## who grades the grader
 
@@ -85,9 +85,9 @@ Set `--min-effect` to the smallest difference you actually care about. Use `--ga
 
 ## the details
 
-- [methods](docs/methods.md): every statistic, its assumptions, and where it breaks
-- [validation](docs/validation.md): the 95 percent promise, measured, including the regimes where it falls short
-- [case study](docs/case-study-paired.md): the same data giving two opposite answers, and why the most starred eval harness has this exact bug filed against it
+- [methods](https://github.com/y4hyya/noisecheck/blob/main/docs/methods.md): every statistic, its assumptions, and where it breaks
+- [validation](https://github.com/y4hyya/noisecheck/blob/main/docs/validation.md): the 95 percent promise, measured, including the regimes where it falls short
+- [case study](https://github.com/y4hyya/noisecheck/blob/main/docs/case-study-paired.md): the same data giving two opposite answers, and why the most starred eval harness has this exact bug filed against it
 
 Commands: `compare`, `power`, `floor`, `import`, `judge agreement`, `judge position`, `judge stability`, `judge scaffold-swap`. Each has `--help`.
 
