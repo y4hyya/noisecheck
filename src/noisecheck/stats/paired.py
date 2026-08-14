@@ -64,7 +64,7 @@ def compare_paired(
     estimate = float(deltas.mean())
     warnings: list[str] = []
 
-    keys, missing = _cluster_keys(paired.cluster_ids)
+    keys, missing = cluster_keys(paired.cluster_ids)
     icc_value: float | None = None
     deff: float | None = None
     effective_n: float | None = None
@@ -149,7 +149,7 @@ def compare_paired(
     )
 
 
-def _cluster_keys(cluster_ids: tuple[str | None, ...]) -> tuple[list[str] | None, int]:
+def cluster_keys(cluster_ids: tuple[str | None, ...]) -> tuple[list[str] | None, int]:
     if all(label is None for label in cluster_ids):
         return None, 0
     missing = sum(1 for label in cluster_ids if label is None)

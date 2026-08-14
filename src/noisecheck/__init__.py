@@ -6,6 +6,7 @@ from noisecheck.errors import DataError, LoadError, NoisecheckError, PairingErro
 from noisecheck.io.csv_ import read_csv
 from noisecheck.io.jsonl import read_jsonl
 from noisecheck.io.promptfoo import read_promptfoo
+from noisecheck.judge.agreement import AgreementResult, judge_agreement
 from noisecheck.schema import Dataset, PairedData, Record, pair
 from noisecheck.stats.multiplicity import benjamini_hochberg
 from noisecheck.stats.paired import ComparisonResult, compare_paired
@@ -20,6 +21,7 @@ except PackageNotFoundError:
     __version__ = "0.0.0"
 
 __all__ = [
+    "AgreementResult",
     "Assessment",
     "ComparisonResult",
     "DataError",
@@ -39,6 +41,7 @@ __all__ = [
     "compare_unpaired",
     "items_needed",
     "judge",
+    "judge_agreement",
     "mde",
     "noise_floor",
     "pair",

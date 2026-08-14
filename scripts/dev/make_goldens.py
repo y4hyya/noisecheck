@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 
 import numpy as np
+from sklearn.metrics import cohen_kappa_score
 from statsmodels.stats.contingency_tables import mcnemar
 from statsmodels.stats.multitest import multipletests
 from statsmodels.stats.weightstats import CompareMeans, DescrStatsW
@@ -55,10 +56,32 @@ def main() -> None:
         _, adjusted, _, _ = multipletests(p_values, method="fdr_bh")
         bh_cases.append({"p_values": p_values, "expected_q": [float(q) for q in adjusted]})
 
+    kappa_cases = []
+    kappa_human = [0, 1, 2, 2, 1, 0, 2, 1, 0, 2, 1, 1]
+    kappa_judge = [0, 1, 2, 1, 1, 0, 2, 2, 0, 2, 0, 1]
+    binary_human = [0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1]
+    binary_judge = [0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1]
+    for human, judged, weights in [
+        (binary_human, binary_judge, None),
+        (kappa_human, kappa_judge, None),
+        (kappa_human, kappa_judge, "linear"),
+        (kappa_human, kappa_judge, "quadratic"),
+    ]:
+        expected = float(cohen_kappa_score(human, judged, weights=weights))
+        kappa_cases.append(
+            {
+                "human": human,
+                "judge": judged,
+                "weights": weights or "none",
+                "expected_kappa": expected,
+            }
+        )
+
     delta_array = np.asarray(deltas)
     lock_low, lock_high = bootstrap_ci(delta_array, b=2000, seed=42)
     payload = {
         "benjamini_hochberg": bh_cases,
+        "kappa": kappa_cases,
         "mcnemar": mcnemar_cases,
         "welch": {
             "baseline": welch_baseline,

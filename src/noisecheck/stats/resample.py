@@ -26,7 +26,7 @@ def bootstrap_ci(
         raise ValueError("deltas have zero variance, the interval would be meaningless")
     rng = np.random.default_rng(seed)
     studentized: list[NDArray[np.float64]] = []
-    for rows in _blocks(b, n):
+    for rows in blocks(b, n):
         indices = rng.integers(0, n, size=(rows, n))
         samples = values[indices]
         means = samples.mean(axis=1)
@@ -50,7 +50,7 @@ def sign_flip_p(deltas: ArrayLike, b: int = 10_000, seed: int = 42) -> float:
     rng = np.random.default_rng(seed)
     flip_choices = np.array([-1.0, 1.0])
     extreme = 0
-    for rows in _blocks(b, n):
+    for rows in blocks(b, n):
         signs = rng.choice(flip_choices, size=(rows, n))
         stats = np.abs((signs * values).mean(axis=1))
         extreme += int((stats >= threshold).sum())
@@ -76,7 +76,7 @@ def cluster_bootstrap_ci(
     cluster_means = sums / sizes
     rng = np.random.default_rng(seed)
     studentized: list[NDArray[np.float64]] = []
-    for rows in _blocks(b, k):
+    for rows in blocks(b, k):
         indices = rng.integers(0, k, size=(rows, k))
         drawn_sums = sums[indices]
         drawn_sizes = sizes[indices]
@@ -110,7 +110,7 @@ def cluster_sign_flip_p(
     rng = np.random.default_rng(seed)
     flip_choices = np.array([-1.0, 1.0])
     extreme = 0
-    for rows in _blocks(b, k):
+    for rows in blocks(b, k):
         signs = rng.choice(flip_choices, size=(rows, k))
         stats = np.abs((signs * sums).sum(axis=1)) / total
         extreme += int((stats >= threshold).sum())
@@ -138,7 +138,7 @@ def _as_deltas(deltas: ArrayLike) -> NDArray[np.float64]:
     return values
 
 
-def _blocks(total: int, width: int) -> Iterator[int]:
+def blocks(total: int, width: int) -> Iterator[int]:
     if total < 1:
         raise ValueError(f"need at least 1 resample, got {total}")
     rows_per_block = max(1, _BLOCK_CELLS // max(width, 1))
