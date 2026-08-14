@@ -7,6 +7,8 @@ from noisecheck.io.csv_ import read_csv
 from noisecheck.io.jsonl import read_jsonl
 from noisecheck.io.promptfoo import read_promptfoo
 from noisecheck.judge.agreement import AgreementResult, judge_agreement
+from noisecheck.judge.position import PositionResult, judge_position
+from noisecheck.judge.stability import StabilityResult, judge_stability
 from noisecheck.schema import Dataset, PairedData, Record, pair
 from noisecheck.stats.multiplicity import benjamini_hochberg
 from noisecheck.stats.paired import ComparisonResult, compare_paired
@@ -34,7 +36,9 @@ __all__ = [
     "Outcome",
     "PairedData",
     "PairingError",
+    "PositionResult",
     "Record",
+    "StabilityResult",
     "UnpairedResult",
     "benjamini_hochberg",
     "compare_paired",
@@ -42,6 +46,8 @@ __all__ = [
     "items_needed",
     "judge",
     "judge_agreement",
+    "judge_position",
+    "judge_stability",
     "mde",
     "noise_floor",
     "pair",
