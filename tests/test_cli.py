@@ -103,6 +103,81 @@ class TestImportCommand:
         assert result.exit_code == 3
 
 
+class TestJudgeCli:
+    def test_agreement_runs_on_the_mtbench_sample(self) -> None:
+        sample = str(EXAMPLES / "mtbench-sample.jsonl")
+        result = runner.invoke(
+            app,
+            ["judge", "agreement", sample, "--human", "human", "--judge", "gpt4"],
+        )
+        assert result.exit_code == 0
+        assert "kappa" in result.output
+
+    def test_agreement_needs_a_metric_choice_when_several_exist(self) -> None:
+        result = runner.invoke(
+            app, ["judge", "agreement", BASELINE, "--human", "a", "--judge", "b"]
+        )
+        assert result.exit_code == 3
+        assert "metric" in result.output
+
+    def test_position_reports_bias(self, tmp_path: Path) -> None:
+        rows: list[dict[str, object]] = []
+        for i in range(12):
+            first = 1.0 if i < 5 else 0.0
+            second = 1.0 if i < 8 else 0.0
+            rows.append(
+                {
+                    "example_id": f"p{i}",
+                    "variant": "original",
+                    "metric": "candidate_preferred",
+                    "value": first,
+                }
+            )
+            rows.append(
+                {
+                    "example_id": f"p{i}",
+                    "variant": "swapped",
+                    "metric": "candidate_preferred",
+                    "value": second,
+                }
+            )
+        path = tmp_path / "swap.jsonl"
+        path.write_text("\n".join(json.dumps(r) for r in rows) + "\n", encoding="utf-8")
+        result = runner.invoke(app, ["judge", "position", str(path)])
+        assert result.exit_code == 0
+        assert "position bias" in result.output
+        assert "flip rate" in result.output
+
+    def test_stability_reports_flips(self, tmp_path: Path) -> None:
+        rows: list[dict[str, object]] = []
+        for run, values in [
+            ("r1", [1.0, 1.0, 0.0]),
+            ("r2", [1.0, 0.0, 0.0]),
+            ("r3", [0.0, 1.0, 0.0]),
+        ]:
+            for i, value in enumerate(values):
+                rows.append(
+                    {
+                        "example_id": f"q{i}",
+                        "variant": "judge",
+                        "metric": "pass",
+                        "value": value,
+                        "run_id": run,
+                    }
+                )
+        path = tmp_path / "repeats.jsonl"
+        path.write_text("\n".join(json.dumps(r) for r in rows) + "\n", encoding="utf-8")
+        result = runner.invoke(app, ["judge", "stability", str(path)])
+        assert result.exit_code == 0
+        assert "flip rate" in result.output
+
+    def test_scaffold_swap_prints_a_promptfoo_config(self) -> None:
+        result = runner.invoke(app, ["judge", "scaffold-swap"])
+        assert result.exit_code == 0
+        assert "prompts:" in result.output
+        assert "Answer A" in result.output
+
+
 class TestPower:
     def test_reports_mde_and_items_for_a_target(self) -> None:
         result = runner.invoke(app, ["power", BASELINE, CANDIDATE, "--target", "0.05"])

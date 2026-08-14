@@ -14,6 +14,10 @@ from noisecheck.errors import DataError, NoisecheckError
 from noisecheck.io.csv_ import read_csv
 from noisecheck.io.jsonl import read_jsonl
 from noisecheck.io.promptfoo import read_promptfoo
+from noisecheck.judge.agreement import judge_agreement
+from noisecheck.judge.position import judge_position
+from noisecheck.judge.scaffold import scaffold_swap_config
+from noisecheck.judge.stability import judge_stability
 from noisecheck.report.info import RunInfo, file_sha256
 from noisecheck.report.json_out import render_json
 from noisecheck.report.markdown import render_markdown
@@ -34,6 +38,13 @@ console = Console()
 error_console = Console(stderr=True)
 
 USER_ERROR_EXIT = 3
+
+judge_app = typer.Typer(
+    add_completion=False,
+    no_args_is_help=True,
+    help="Check the judge itself: agreement with humans, position bias, stability.",
+)
+app.add_typer(judge_app, name="judge")
 
 
 @app.command()
@@ -163,6 +174,120 @@ def import_(
     except NoisecheckError as error:
         error_console.print(f"error: {error}")
         raise typer.Exit(USER_ERROR_EXIT) from error
+
+
+@judge_app.command()
+def agreement(
+    file: Path,
+    human: Annotated[str, typer.Option("--human")] = "human",
+    judge_variant: Annotated[str, typer.Option("--judge")] = "judge",
+    metric: Annotated[str | None, typer.Option("--metric", "-m")] = None,
+    weights: Annotated[str, typer.Option("--weights")] = "none",
+    b: Annotated[int, typer.Option("--b")] = 10_000,
+    seed: Annotated[int, typer.Option("--seed")] = 42,
+    level: Annotated[float, typer.Option("--level")] = 0.95,
+) -> None:
+    """How well the judge tracks human labels, corrected for lucky agreement."""
+    try:
+        dataset = _load(file)
+        chosen = metric or _sole_metric(dataset, file)
+        result = judge_agreement(
+            pair(dataset, human, judge_variant, chosen),
+            b=b,
+            seed=seed,
+            level=level,
+            weights=weights,
+        )
+        console.print(
+            f"{chosen}: kappa {fmt(result.kappa)} "
+            f"[{fmt(result.ci_low)}, {fmt(result.ci_high)}], "
+            f"raw agreement {result.observed_agreement:.0%} over {result.n} pairs"
+        )
+        for human_label, judge_label, count in result.confusion:
+            console.print(f"  human {human_label} and judge {judge_label}: {count}")
+        if result.worst_disagreements:
+            worst = ", ".join(result.worst_disagreements[:5])
+            console.print(f"  worst disagreements: {worst}")
+        for warning in result.warnings:
+            console.print(f"  {warning}", style="dim")
+    except NoisecheckError as error:
+        error_console.print(f"error: {error}")
+        raise typer.Exit(USER_ERROR_EXIT) from error
+
+
+@judge_app.command()
+def position(
+    file: Path,
+    original: Annotated[str, typer.Option("--original")] = "original",
+    swapped: Annotated[str, typer.Option("--swapped")] = "swapped",
+    metric: Annotated[str | None, typer.Option("--metric", "-m")] = None,
+    b: Annotated[int, typer.Option("--b")] = 10_000,
+    seed: Annotated[int, typer.Option("--seed")] = 42,
+    level: Annotated[float, typer.Option("--level")] = 0.95,
+) -> None:
+    """Whether the judge's preference follows the seat instead of the answer."""
+    try:
+        dataset = _load(file)
+        chosen = metric or _sole_metric(dataset, file)
+        result = judge_position(
+            pair(dataset, original, swapped, chosen), b=b, seed=seed, level=level
+        )
+        console.print(
+            f"{chosen}: position bias {fmt(result.bias)} "
+            f"[{fmt(result.ci_low)}, {fmt(result.ci_high)}], "
+            f"flip rate {result.flip_rate:.0%} over {result.n} pairs"
+        )
+        if result.mcnemar_p is not None:
+            console.print(f"  mcnemar p {fmt(result.mcnemar_p)}")
+        for warning in result.warnings:
+            console.print(f"  {warning}", style="dim")
+    except NoisecheckError as error:
+        error_console.print(f"error: {error}")
+        raise typer.Exit(USER_ERROR_EXIT) from error
+
+
+@judge_app.command()
+def stability(
+    file: Path,
+    variant: Annotated[str | None, typer.Option("--variant")] = None,
+    metric: Annotated[str | None, typer.Option("--metric", "-m")] = None,
+) -> None:
+    """How often the judge changes its mind on identical inputs."""
+    try:
+        dataset = _load(file)
+        chosen_variant = _sole_variant(dataset, file) if variant is None else variant
+        chosen = metric or _sole_metric(dataset, file)
+        result = judge_stability(dataset, chosen_variant, chosen)
+        line = (
+            f"{chosen}: floor ±{fmt(result.floor)} over {result.n_runs} runs "
+            f"of {result.n_examples} examples"
+        )
+        if result.flip_rate is not None:
+            line = f"{line}, flip rate {result.flip_rate:.0%}"
+        console.print(line)
+        if result.flip_rates:
+            flips = ", ".join(f"{example} {rate:.0%}" for example, rate in result.flip_rates[:5])
+            console.print(f"  flippiest examples: {flips}")
+        for warning in result.warnings:
+            console.print(f"  {warning}", style="dim")
+    except NoisecheckError as error:
+        error_console.print(f"error: {error}")
+        raise typer.Exit(USER_ERROR_EXIT) from error
+
+
+@judge_app.command("scaffold-swap")
+def scaffold_swap() -> None:
+    """Print a promptfoo config template for an order swap experiment."""
+    console.print(scaffold_swap_config(), highlight=False)
+
+
+def _sole_metric(dataset: Dataset, path: Path) -> str:
+    metrics = sorted(dataset.metrics())
+    if len(metrics) != 1:
+        raise DataError(
+            f"{path} contains {len(metrics)} metrics ({', '.join(metrics)}), pick one with --metric"
+        )
+    return metrics[0]
 
 
 def _build_comparisons(
