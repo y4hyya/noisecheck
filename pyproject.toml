@@ -28,6 +28,7 @@ dev = [
     "statsmodels>=0.14",
     "scikit-learn>=1.5",
     "scipy-stubs>=1.17.1.5",
+    "certifi>=2026.7.22",
 ]
 
 [build-system]
