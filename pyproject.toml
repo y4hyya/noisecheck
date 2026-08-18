@@ -1,6 +1,6 @@
 [project]
 name = "noisecheck"
-version = "0.1.0"
+version = "0.1.1"
 description = "Tells you if your AI eval result is a real improvement or just noise"
 readme = "README.md"
 requires-python = ">=3.11"

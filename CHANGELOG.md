@@ -1,5 +1,10 @@
 # changelog
 
+## 0.1.1
+
+- fix: reason strings for lower is better metrics now show the raw estimate, so the reason and the table agree with your files
+- docs: the readme now carries two diagrams, where noisecheck sits in the pipeline and why 40 clustered answers are really 8 pieces of evidence
+
 ## 0.1.0
 
 First release.
