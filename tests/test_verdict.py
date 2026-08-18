@@ -89,6 +89,18 @@ class TestOutcomes:
             judge([better], lower_is_better={"latency"}).verdicts[0].outcome is Outcome.IMPROVEMENT
         )
 
+    def test_reason_shows_the_raw_estimate_for_flipped_metrics(self) -> None:
+        slower = result(metric="latency", estimate=0.9311, ci=(0.8, 1.05))
+        worse = judge([slower], lower_is_better={"latency"}).verdicts[0]
+        assert worse.outcome is Outcome.REGRESSION
+        assert "0.9311" in worse.reason
+        assert "-0.9311" not in worse.reason
+
+        faster = result(metric="latency", estimate=-0.5, ci=(-0.7, -0.3))
+        better = judge([faster], lower_is_better={"latency"}).verdicts[0]
+        assert better.outcome is Outcome.IMPROVEMENT
+        assert "-0.5" in better.reason
+
     def test_identical_variants_pass_non_regression(self) -> None:
         flat = result(estimate=0.0, se=0.0, p=1.0, ci=(0.0, 0.0))
         assessment = judge([flat])

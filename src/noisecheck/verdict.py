@@ -94,14 +94,14 @@ def judge(
         needed: int | None = None
         if significant and estimate > 0.0 and estimate >= min_effect:
             outcome = Outcome.IMPROVEMENT
-            reason = f"a real improvement of about {estimate:.4g}"
+            reason = f"a real improvement of about {comparison.estimate:.4g}"
         elif significant and estimate < 0.0 and -estimate >= min_effect:
             outcome = Outcome.REGRESSION
-            reason = f"a real regression of about {estimate:.4g}"
+            reason = f"a real regression of about {comparison.estimate:.4g}"
         elif significant:
             outcome = Outcome.NO_DETECTABLE_DIFFERENCE
             reason = (
-                f"a real difference of about {estimate:.4g}, smaller than the "
+                f"a real difference of about {comparison.estimate:.4g}, smaller than the "
                 f"minimum effect that matters ({min_effect:g})"
             )
         elif min_effect > 0.0 and detectable <= min_effect:
