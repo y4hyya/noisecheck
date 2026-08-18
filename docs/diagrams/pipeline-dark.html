@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Where noisecheck sits</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --color-paper:   #2d3142;
+      --color-ink:     #f5f5f5;
+      --color-muted:   #bfc0c0;
+      --color-accent:  #f08a59;
+      --font-sans:     'Geist', system-ui, sans-serif;
+      --font-serif:    'Instrument Serif', serif;
+      --font-mono:     'Geist Mono', ui-monospace, monospace;
+    }
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-paper);
+      color: var(--color-ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2rem;
+    }
+    .frame { max-width: 1200px; width: 100%; }
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+      margin-bottom: 0.5rem;
+    }
+    h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      color: var(--color-ink);
+      margin-bottom: 1.5rem;
+    }
+    svg { width: 100%; min-width: 900px; display: block; }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">Architecture · noisecheck</p>
+    <h1>Where noisecheck sits</h1>
+
+    <svg viewBox="0 0 960 248" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="pipeline-dark-title pipeline-dark-desc">
+      <title id="pipeline-dark-title">Where noisecheck sits</title>
+      <desc id="pipeline-dark-desc">Flow from test questions through models answering to score sheets, then noisecheck reads the sheets and gives the verdict with an exit code. noisecheck never runs the test.</desc>
+      <defs>
+        <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#bfc0c0"/></marker>
+        <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#f08a59"/></marker>
+        <marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#6a95d8"/></marker>
+      </defs>
+
+      <rect width="100%" height="100%" fill="#2d3142"/>
+
+      <rect x="24" y="40" width="360" height="128" rx="8"
+            fill="rgba(245,245,245,0.02)" stroke="rgba(245,245,245,0.20)" stroke-width="0.8" stroke-dasharray="4,4"/>
+      <rect x="136" y="44" width="136" height="12" rx="2" fill="#2d3142"/>
+      <text x="204" y="53" fill="rgba(245,245,245,0.45)" font-size="7"
+            font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.14em">YOUR SIDE RUNS THE TEST</text>
+
+      <line x1="184" y1="112" x2="220" y2="112" stroke="#bfc0c0" stroke-width="1" marker-end="url(#arrow)"/>
+      <line x1="368" y1="112" x2="404" y2="112" stroke="#bfc0c0" stroke-width="1" marker-end="url(#arrow)"/>
+      <line x1="552" y1="112" x2="588" y2="112" stroke="#bfc0c0" stroke-width="1" marker-end="url(#arrow)"/>
+      <line x1="736" y1="112" x2="772" y2="112" stroke="#bfc0c0" stroke-width="1" marker-end="url(#arrow)"/>
+
+      <rect x="556" y="92" width="32" height="12" rx="2" fill="#2d3142"/>
+      <text x="572" y="101" fill="#8e98ac" font-size="8"
+            font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">READS</text>
+
+      <rect x="40" y="72" width="144" height="80" rx="6" fill="#2d3142"/>
+      <rect x="40" y="72" width="144" height="80" rx="6" fill="rgba(191,192,192,0.10)" stroke="#8e98ac" stroke-width="1"/>
+      <text x="112" y="108" fill="#f5f5f5" font-size="12" font-weight="600"
+            font-family="'Geist', sans-serif" text-anchor="middle">test questions</text>
+      <text x="112" y="124" fill="#bfc0c0" font-size="9"
+            font-family="'Geist Mono', monospace" text-anchor="middle">gsm8k, mmlu, your own</text>
+
+      <rect x="224" y="72" width="144" height="80" rx="6" fill="#2d3142"/>
+      <rect x="224" y="72" width="144" height="80" rx="6" fill="#393e53" stroke="#f5f5f5" stroke-width="1"/>
+      <text x="296" y="108" fill="#f5f5f5" font-size="12" font-weight="600"
+            font-family="'Geist', sans-serif" text-anchor="middle">models answer</text>
+      <text x="296" y="124" fill="#bfc0c0" font-size="9"
+            font-family="'Geist Mono', monospace" text-anchor="middle">your script or harness</text>
+
+      <rect x="408" y="72" width="144" height="80" rx="6" fill="#2d3142"/>
+      <rect x="408" y="72" width="144" height="80" rx="6" fill="rgba(245,245,245,0.05)" stroke="#bfc0c0" stroke-width="1"/>
+      <rect x="416" y="78" width="40" height="12" rx="2" fill="transparent" stroke="rgba(191,192,192,0.40)" stroke-width="0.8"/>
+      <text x="436" y="87" fill="rgba(191,192,192,0.80)" font-size="7"
+            font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">JSONL</text>
+      <text x="480" y="112" fill="#f5f5f5" font-size="12" font-weight="600"
+            font-family="'Geist', sans-serif" text-anchor="middle">score sheets</text>
+      <text x="480" y="128" fill="#bfc0c0" font-size="9"
+            font-family="'Geist Mono', monospace" text-anchor="middle">one row per answer</text>
+
+      <rect x="592" y="72" width="144" height="80" rx="6" fill="#2d3142"/>
+      <rect x="592" y="72" width="144" height="80" rx="6" fill="rgba(240,138,89,0.08)" stroke="#f08a59" stroke-width="1.2"/>
+      <rect x="600" y="78" width="32" height="12" rx="2" fill="transparent" stroke="rgba(240,138,89,0.40)" stroke-width="0.8"/>
+      <text x="616" y="87" fill="rgba(240,138,89,0.90)" font-size="7"
+            font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">CLI</text>
+      <text x="664" y="112" fill="#f5f5f5" font-size="12" font-weight="600"
+            font-family="'Geist', sans-serif" text-anchor="middle">noisecheck</text>
+      <text x="664" y="128" fill="#bfc0c0" font-size="9"
+            font-family="'Geist Mono', monospace" text-anchor="middle">only does the math</text>
+
+      <rect x="776" y="72" width="144" height="80" rx="6" fill="#2d3142"/>
+      <rect x="776" y="72" width="144" height="80" rx="6" fill="#393e53" stroke="#f5f5f5" stroke-width="1"/>
+      <text x="848" y="108" fill="#f5f5f5" font-size="12" font-weight="600"
+            font-family="'Geist', sans-serif" text-anchor="middle">the verdict</text>
+      <text x="848" y="124" fill="#bfc0c0" font-size="9"
+            font-family="'Geist Mono', monospace" text-anchor="middle">exit code 0 1 2 3</text>
+
+      <text x="480" y="208" fill="#f5f5f5" font-size="14" font-style="italic"
+            font-family="'Instrument Serif', serif" text-anchor="middle">noisecheck never plays the game. It only reads the sheets and rules.</text>
+    </svg>
+  </div>
+</body>
+</html>

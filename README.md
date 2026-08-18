@@ -7,6 +7,11 @@ noisecheck reads your eval results and gives you a straight answer: real improve
 
 It never runs your evals and never calls any AI. It only does the math, on your files, on your machine, the same way every time.
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/y4hyya/noisecheck/main/docs/diagrams/pipeline-dark.png">
+  <img alt="The flow from test questions to models answering to score sheets to noisecheck. noisecheck only reads the score sheets and gives the verdict with an exit code." src="https://raw.githubusercontent.com/y4hyya/noisecheck/main/docs/diagrams/pipeline.png">
+</picture>
+
 ## sixty seconds
 
 ```
@@ -52,6 +57,11 @@ task_success: this eval cannot detect differences below 0.1653, about 36 items w
 ```
 
 Same data. The latency improvement survives, because it shows up inside every conversation. The task success "win" honestly becomes "cannot tell": 8 conversations are not enough independent evidence, and the tool says how many items would settle it.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/y4hyya/noisecheck/main/docs/diagrams/clusters-dark.png">
+  <img alt="The same 40 answers counted two ways. Counted one by one they look like 40 pieces of evidence. Grouped into their 8 conversations they are really 8, because answers in one conversation go wrong together." src="https://raw.githubusercontent.com/y4hyya/noisecheck/main/docs/diagrams/clusters.png">
+</picture>
 
 This is not a matter of taste. [validation.md](https://github.com/y4hyya/noisecheck/blob/main/docs/validation.md) simulates a thousand worlds per row where the truth is known: the naive analysis fires up to 32 percent false alarms on clustered data, while noisecheck stays at the promised 5.
 
