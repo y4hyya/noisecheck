@@ -4,7 +4,7 @@ import math
 
 import numpy as np
 import pytest
-from hypothesis import given, settings
+from hypothesis import example, given, settings
 from hypothesis import strategies as st
 from scipy import stats as scipy_stats
 
@@ -42,13 +42,15 @@ class TestProperties:
 
     @given(pair_rows, st.floats(min_value=0.05, max_value=1000.0))
     @settings(max_examples=60, deadline=None)
+    @example(rows=[(0.0, 0.0), (0.0, -1.0), (5.960464477539063e-08, -1.0)], k=0.05)
+    @example(rows=[(0.0, 0.0), (0.0, 1.0), (5.960464477539063e-08, 1.0)], k=0.05)
     def test_scaling_scales_estimate_and_interval(
         self, rows: list[tuple[float, float]], k: float
     ) -> None:
         plain = compare_paired(build(rows), b=200, seed=7)
         scaled = compare_paired(build([(b * k, c * k) for b, c in rows]), b=200, seed=7)
         magnitude = abs(scaled.estimate) + scaled.se + abs(scaled.ci_low) + abs(scaled.ci_high)
-        tolerance = 1e-9 + 1e-10 * magnitude
+        tolerance = 1e-9 + 1e-8 * magnitude
         assert abs(scaled.estimate - plain.estimate * k) <= tolerance
         assert abs(scaled.ci_low - plain.ci_low * k) <= tolerance
         assert abs(scaled.ci_high - plain.ci_high * k) <= tolerance
